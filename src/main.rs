@@ -8,6 +8,7 @@ mod element;
 mod gene;
 mod creature;
 mod world;
+mod utils;
 
 fn draw_grid() {
     for x in (0..SCREEN_WIDTH).step_by(CELL_SIZE as usize) {

@@ -8,3 +8,8 @@ base64 = "0.22.1"
 macroquad = "0.4.15"
 strum = "0.28.0"
 strum_macros = "0.28.0"
+
+[profile.release]
+debug = true
+lto = false
+codegen-units = 1
