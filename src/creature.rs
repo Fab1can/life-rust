@@ -44,13 +44,13 @@ pub struct Creature {
 
 impl Creature {
     fn new(x: u16, y: u16, genes: Vec<Gene>, elements: HashMap<ElementKind, u16>) -> Self {
-        let mut hasher = std::collections::hash_map::DefaultHasher::new();
-        let mut sum = 0;
+        let mut sum: u128 = 0;
         genes.iter().for_each(|gene| {
+            let mut hasher = std::collections::hash_map::DefaultHasher::new();
             gene.hash(&mut hasher);
-            sum += hasher.finish();
+            sum += u128::from(hasher.finish());
         });
-        let genome_hash = sum/genes.len() as u64;
+        let genome_hash : u64 = u64::try_from(sum/u128::try_from(genes.len()).unwrap()).unwrap();
         let mut new_elements = elements;
         *new_elements.entry(FUNDAMENTAL_ELEMENT).or_insert(0) += FUNDAMENTAL_ELEMENT_INITIAL_AMOUNT;
         let color = color_u8!(genome_hash%255, (genome_hash/255)%255, (genome_hash/65536)%255, 255);
@@ -158,6 +158,18 @@ impl Creature {
         if size < 1f32 {
             result.alive = false;
             return result;
+        }
+        while f32::from(size) * SIZE_BASE_MULTIPLIER < f32::from(self.elements.values().sum::<u16>()){
+            let not_empty_elements: Vec<ElementKind> = self.elements.iter().filter(|(_, quantity)| **quantity > 0).map(|(kind, _)| *kind).collect();
+            if not_empty_elements.is_empty() {
+                result.alive = false;
+                return result;
+            }else{
+                let kind = not_empty_elements[rand::gen_range(0, not_empty_elements.len())];
+                self.remove_elements(kind, 1);
+                let (new_x, new_y) = get_around(self.x, self.y);
+                result.ejected_elements.push(Element::new(new_x, new_y, kind));
+            }
         }
         let target_element: Option<ElementKind>;
         if critical_produced_gene_indices.is_empty() {
