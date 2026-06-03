@@ -43,13 +43,13 @@ fn draw_creatures(world: &World) {
 }
 
 fn draw_overlay(world: &World) {
-    let text = format!("Creatures: {}  Elements: {}  (R to reset)", world.get_creatures().len(), world.get_elements().len());
+    let text = format!("Creatures: {}  Elements: {} Tick: {}  (R to reset)", world.get_creatures().len(), world.get_elements().len(), world.get_tick());
     draw_text(&text, 10.0, 20.0, 20.0, WHITE);
 }
 
 fn window_conf() -> Conf {
     Conf {
-        window_title: "My Game".to_owned(),
+        window_title: "Life".to_owned(),
         window_width: i32::from(SCREEN_WIDTH),
         window_height: i32::from(SCREEN_HEIGHT),
         window_resizable: false,

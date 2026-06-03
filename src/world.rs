@@ -111,14 +111,15 @@ impl World {
         self.tick += 1;
     }
 
-    
-
-
     pub fn get_creatures(&self) -> &Vec<Creature> {
         &self.creatures
     }
 
     pub fn get_elements(&self) -> &Vec<Element> {
         &self.elements
+    }
+
+    pub fn get_tick(&self) -> u128 {
+        self.tick
     }
 }

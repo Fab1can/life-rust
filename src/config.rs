@@ -4,9 +4,9 @@ use crate::element::ElementKind;
 
 use macroquad::{color::Color, color_u8};
 
-pub const GRID_WIDTH: u16 = 240;
-pub const GRID_HEIGHT: u16 = 160;
-pub const CELL_SIZE: u16 = 6;
+pub const GRID_WIDTH: u16 = 720;
+pub const GRID_HEIGHT: u16 = 480;
+pub const CELL_SIZE: u16 = 2;
 
 // Simulation parameters
 pub const FPS: u16 = 2;
@@ -15,7 +15,7 @@ pub const ELEMENT_COUNT: u16 = 500;
 pub const SPEED_BASE_MULTIPLIER: f32 = 10.0;
 pub const SENSE_BASE_MULTIPLIER: f32 = 200.0;
 pub const SIZE_BASE_MULTIPLIER: f32 = 7.0;
-pub const FUNDAMENTAL_ELEMENT: ElementKind = ElementKind::SUGAR;
+pub const FUNDAMENTAL_ELEMENT: ElementKind = ElementKind::SUCROSE;
 pub const FUNDAMENTAL_ELEMENT_INITIAL_AMOUNT: u16 = 20;
 pub const FUNDAMENTAL_ELEMENT_CONSUMPTION_AMOUNT: u16 = 1;
 pub const ELEMENTS_MIN: u16 = 0;
@@ -52,16 +52,16 @@ pub const SCREEN_HEIGHT: u16 = GRID_HEIGHT * CELL_SIZE;
 
 pub static ELEMENT_COLORS: LazyLock<[(ElementKind, Color); 10]> = LazyLock::new(|| {
     [
-        (ElementKind::SUGAR, color_u8!(100, 255, 100, 255)),
-        (ElementKind::SALT, color_u8!(255, 255, 100, 255)),
-        (ElementKind::WATER, color_u8!(100, 100, 255, 255)),
-        (ElementKind::ACID, color_u8!(255, 100, 100, 255)),
-        (ElementKind::BASE, color_u8!(255, 100, 255, 255)),
-        (ElementKind::OXIDE, color_u8!(100, 255, 255, 255)),
-        (ElementKind::FLUORIDE, color_u8!(255, 255, 100, 255)),
-        (ElementKind::CARBONATE, color_u8!(255, 100, 255, 255)),
-        (ElementKind::NITRATE, color_u8!(100, 255, 255, 255)),
-        (ElementKind::PHOSPHATE, color_u8!(255, 255, 100, 255)),
+        (ElementKind::SUCROSE, color_u8!(255, 255, 255, 255)), //rgb(255, 255, 255)
+        (ElementKind::POTASSIUM_CHROMATE, color_u8!(247, 234, 71, 255)), //rgb(247, 234, 71)
+        (ElementKind::WATER, color_u8!(16, 119, 187, 255)), //rgb(16, 119, 187)
+        (ElementKind::MANGANESE_DIOXIDE, color_u8!(0, 0, 0, 255)), //rgb(0, 0, 0)
+        (ElementKind::LEAD_TETROXIDE, color_u8!(228, 80, 1, 255)), //rgb(228, 80, 1)
+        (ElementKind::NICKEL_CHLORIDE, color_u8!(47, 152, 33, 255)), //rgb(47, 152, 33)
+        (ElementKind::COPPER_FLUORIDE, color_u8!(40, 193, 197 , 255)), //rgb(40, 193, 197)
+        (ElementKind::COBALT_CARBONATE, color_u8!(214, 56, 196, 255)), //rgb(214, 56, 196)
+        (ElementKind::MANGANESE_NITRATE, color_u8!(243, 207, 198, 255)), //rgb(243, 207, 198)
+        (ElementKind::RED_PHOSPHORUS, color_u8!(136, 8, 8, 255)), //rgb(136, 8, 8)
     ]
 });
 
