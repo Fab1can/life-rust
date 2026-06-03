@@ -6,12 +6,12 @@ use base64::{engine::general_purpose::STANDARD, Engine as _};
 
 use std::collections::HashMap;
 
-use crate::config::{FUNDAMENTAL_ELEMENT, FUNDAMENTAL_ELEMENT_INITIAL_AMOUNT, FUNDAMENTAL_ELEMENT_CONSUMPTION_AMOUNT, GRID_HEIGHT, GRID_WIDTH, GENE_MAX, GENE_MIN, ELEMENTS_MAX, ELEMENTS_MIN, SIZE_BASE_MULTIPLIER, SPEED_BASE_MULTIPLIER, SENSE_BASE_MULTIPLIER, VERBOSE};
+use crate::config::{FUNDAMENTAL_ELEMENT, FUNDAMENTAL_ELEMENT_INITIAL_AMOUNT, FUNDAMENTAL_ELEMENT_CONSUMPTION_AMOUNT, GRID_HEIGHT, GRID_WIDTH, GENE_MAX, GENE_MIN, ELEMENTS_MAX, ELEMENTS_MIN, SIZE_BASE_MULTIPLIER, SPEED_BASE_MULTIPLIER, SENSE_BASE_MULTIPLIER, VERBOSE, MUTATION_PROBABILITY};
 use crate::gene::{Gene, random_gene};
 use crate::element::{ElementKind, random_element_kind, Element};
 use crate::utils::get_around;
 
-use std::hash::{DefaultHasher, Hash, Hasher};
+use std::hash::{Hash, Hasher};
 
 use std::cmp::min;
 
@@ -39,16 +39,20 @@ pub struct Creature {
     genes: Vec<Gene>,
     elements: HashMap<ElementKind, u16>,
     color: Color,
-    genome_hash: i32
+    genome_hash: u64
 }
 
 impl Creature {
     fn new(x: u16, y: u16, genes: Vec<Gene>, elements: HashMap<ElementKind, u16>) -> Self {
-        let mut hasher = DefaultHasher::new();
-        genes.iter().for_each(|gene| gene.hash(&mut hasher));
+        let mut hasher = std::collections::hash_map::DefaultHasher::new();
+        let mut sum = 0;
+        genes.iter().for_each(|gene| {
+            gene.hash(&mut hasher);
+            sum += hasher.finish();
+        });
+        let genome_hash = sum/genes.len() as u64;
         let mut new_elements = elements;
         *new_elements.entry(FUNDAMENTAL_ELEMENT).or_insert(0) += FUNDAMENTAL_ELEMENT_INITIAL_AMOUNT;
-        let genome_hash = hasher.finish() as i32;
         let color = color_u8!(genome_hash%255, (genome_hash/255)%255, (genome_hash/65536)%255, 255);
         Creature { x, y, genes, elements: new_elements, color, genome_hash }
     }
@@ -76,7 +80,10 @@ impl Creature {
         }
         
         if let Some(_element) = element {
-            let dist = f32::max(1f32, min_dist_sq.sqrt());
+            let dist = min_dist_sq.sqrt();
+            if dist < speed {
+                return (dx, dy);
+            }
             let move_x = (speed * dx as f32 / dist) as i32;
             let move_y = (speed * dy as f32 / dist) as i32;
             return (move_x, move_y);
@@ -134,9 +141,9 @@ impl Creature {
                             result.alive = false;
                             return result;
                         }
+                        }
                     }
                 }
-            }
         }
 
         let mut size = SIZE_BASE_MULTIPLIER;
@@ -209,7 +216,16 @@ impl Creature {
     }
 
     pub fn reproduce(&mut self, x: u16, y: u16) -> Creature {
-        let new_genes = self.genes.iter().map(|gene| gene.to_owned()).collect();
+        let mut new_genes: Vec<Gene> = self.genes.iter().map(|gene| gene.mutate()).collect();
+        let gene_drop = rand::gen_range(0f32,1f32)<MUTATION_PROBABILITY;
+        if gene_drop {
+            let gene_index = rand::gen_range(0, new_genes.len());
+            new_genes.remove(gene_index);
+        }
+        let gene_acquisition = rand::gen_range(0f32,1f32)<MUTATION_PROBABILITY;
+        if gene_acquisition {
+            new_genes.push(random_gene());
+        }
         let new_elements = self.elements.iter().map(|(k, v)| (*k, *v/2)).collect();
         self.elements.iter_mut().for_each(|(_, v)| {*v = *v/2;});
         Creature::new(x, y, new_genes, new_elements)
@@ -219,7 +235,7 @@ impl Creature {
         self.color
     }
 
-    pub fn get_genome_hash(&self) -> i32 {
+    pub fn get_genome_hash(&self) -> u64 {
         self.genome_hash
     }
 
