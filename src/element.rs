@@ -5,16 +5,16 @@ use strum_macros::{Display, EnumIter};
 
 #[derive(Debug, EnumIter, Clone, Copy, PartialEq, Eq, Hash, Display)]
 pub enum ElementKind {
-    SUCROSE,
-    POTASSIUM_CHROMATE,
-    WATER,
-    MANGANESE_DIOXIDE,
-    LEAD_TETROXIDE,
-    NICKEL_CHLORIDE,
-    COPPER_FLUORIDE,
-    COBALT_CARBONATE,
-    MANGANESE_NITRATE,
-    RED_PHOSPHORUS,
+    Sucrose,
+    PotassiumChromate,
+    Water,
+    ManganeseDioxide,
+    LeadTetroxide,
+    NickelChloride,
+    CopperFluoride,
+    CobaltCarbonate,
+    ManganeseNitrate,
+    RedPhosphorus,
 }
 
 #[derive(Debug, Clone)]
